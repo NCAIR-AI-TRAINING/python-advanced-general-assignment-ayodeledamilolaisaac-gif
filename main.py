@@ -47,15 +47,16 @@ def add_visitor(visitor_name):
     # Append visitor to file
     with open(FILENAME, "a") as f:
         f.write(f"{visitor_name},{now.isoformat()}\n")
-        #Append visitor ends
+    
+    return f"{visitor_name} added successfully!"
 
-# Main function to run the program
+# Main function to run the program interactively
 def main():
     ensure_file()
-    name = input("Enter visitor's name: ")
+    name = input("Enter visitor's name: ").strip()
     try:
-        add_visitor(name)
-        print("Visitor added successfully!")
+        message = add_visitor(name)
+        print(message)
     except Exception as e:
         print("Error:", e)
 
