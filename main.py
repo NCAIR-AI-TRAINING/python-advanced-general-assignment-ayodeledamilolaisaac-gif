@@ -37,7 +37,7 @@ def add_visitor(visitor_name):
     now = datetime.now()
 
     # Rule 1: No duplicate consecutive visitors
-    if last_name == visitor_name:
+    if last_name == visitor_name:           
         raise DuplicateVisitorError("Duplicate consecutive visitor!")
 
     # Rule 2: 5-minute wait between different visitors
@@ -59,5 +59,6 @@ def main():
     except Exception as e:
         print("Error:", e)
 
+# Only run main if script is executed directly
 if __name__ == "__main__":
     main()
