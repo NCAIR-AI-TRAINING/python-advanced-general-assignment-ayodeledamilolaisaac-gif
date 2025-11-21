@@ -24,7 +24,8 @@ jobs:
         python -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip install -r requirements.txt; else echo "No requirements.txt, skipping"; fi
 
-    - name: Run tests (if present)
-      run: |
-        if [ -d tests ]; then python -m unittest discover tests; else echo "No tests folder, skipping"; fi
+    - name: Install pytest
+      run: pip install pytest
 
+    - name: Run pytest
+      run: pytest -q
