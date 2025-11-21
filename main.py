@@ -45,6 +45,8 @@ def add_visitor(visitor_name):
         raise EarlyEntryError("Must wait 5 minutes between visitors!")
 
     # Append visitor to file
+    # Triggering Autograde workflowgit add main.py
+git commit -m "Trigger PR for Autograde workflow"
     with open(FILENAME, "a") as f:
         f.write(f"{visitor_name},{now.isoformat()}\n")
 
