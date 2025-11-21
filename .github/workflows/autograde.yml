@@ -27,4 +27,3 @@ jobs:
       - name: Run tests
         run: |
           if [ -d tests ]; then python -m unittest discover tests; else echo "No tests folder, skipping"; fi
-
