@@ -1,10 +1,19 @@
-import main
-from datetime import datetime
+import unittest
+from datetime import datetime, timedelta
+from main import add_visitor, EarlyEntryError, ensure_file, FILENAME
+import os
 
-def test_timestamp_is_added():
-    with open("visitors.txt", "w") as f:
-        f.write("Jane | 2020-01-01T00:00:00\n")
-    main.add_visitor("Mary")
-    with open("visitors.txt") as f:
-        last = f.readlines()[-1]
-    assert last.startswith("Mary | ")
+class TestTimestamp(unittest.TestCase):
+    def setUp(self):
+        ensure_file()
+        if os.path.exists(FILENAME):
+            os.remove(FILENAME)
+        ensure_file()
+
+    def test_wait_time_rule(self):
+        add_visitor("Bob")
+        with self.assertRaises(EarlyEntryError):
+            add_visitor("Alice")  # Should fail if added within 5 minutes
+
+if __name__ == "__main__":
+    unittest.main()
