@@ -47,6 +47,7 @@ def add_visitor(visitor_name):
     # Append visitor to file
     with open(FILENAME, "a") as f:
         f.write(f"{visitor_name},{now.isoformat()}\n")
+        #Append visitor ends
 
 # Main function to run the program
 def main():

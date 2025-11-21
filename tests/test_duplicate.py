@@ -1,12 +1,19 @@
-import main
-from datetime import datetime
+import unittest
+import os
+from main import add_visitor, DuplicateVisitorError, ensure_file, FILENAME
 
-def test_duplicate_visitor_error():
-    with open("visitors.txt", "w") as f:
-        f.write(f"John | {datetime.now().isoformat()}\n")
-    try:
-        main.add_visitor("John")
-        raised=False
-    except main.DuplicateVisitorError:
-        raised=True
-    assert raised
+class TestDuplicateVisitor(unittest.TestCase):
+    def setUp(self):
+        ensure_file()
+        # Start fresh for each test
+        if os.path.exists(FILENAME):
+            os.remove(FILENAME)
+        ensure_file()
+
+    def test_duplicate(self):
+        add_visitor("Alice")
+        with self.assertRaises(DuplicateVisitorError):
+            add_visitor("Alice")  # Adding same visitor consecutively
+
+if __name__ == "__main__":
+    unittest.main()

@@ -1,8 +1,15 @@
+import unittest
 import os
-import main
+from main import ensure_file, FILENAME
 
-def test_file_is_created_if_missing():
-    if os.path.exists("visitors.txt"):
-        os.remove("visitors.txt")
-    main.ensure_file()
-    assert os.path.exists("visitors.txt")
+class TestFileCreation(unittest.TestCase):
+    def setUp(self):
+        if os.path.exists(FILENAME):
+            os.remove(FILENAME)
+
+    def test_file_creation(self):
+        ensure_file()
+        self.assertTrue(os.path.exists(FILENAME))
+
+if __name__ == "__main__":
+    unittest.main()
