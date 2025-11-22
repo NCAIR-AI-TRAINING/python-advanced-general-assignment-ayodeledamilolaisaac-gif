@@ -18,13 +18,16 @@ def ensure_file():
 
 def get_last_visitor():
     """Return last visitor's name and timestamp."""
-    ensure_file()  # always ensure file exists
+    ensure_file()
+
     if os.path.getsize(FILENAME) == 0:
         return None, None
+
     with open(FILENAME, "r") as f:
         lines = f.readlines()
         if not lines:
             return None, None
+
         last_line = lines[-1].strip()
         name, timestamp_str = last_line.split(",")
         timestamp = datetime.fromisoformat(timestamp_str)
@@ -32,18 +35,20 @@ def get_last_visitor():
 
 def add_visitor(visitor_name):
     """Add visitor following rules."""
+    ensure_file()  # VERY IMPORTANT
+
     last_name, last_time = get_last_visitor()
     now = datetime.now()
 
-    # Rule 1: No duplicate consecutive visitors
+    # Rule 1: Duplicate visitor check
     if last_name == visitor_name:
-        raise DuplicateVisitorError("Duplicate consecutive visitor!")
+        raise DuplicateVisitorError("Duplicate visitor.")
 
-    # Rule 2: 1-minute wait between different visitors
-    if last_time and (now - last_time) < timedelta(minutes=1):
-        raise EarlyEntryError("Must wait 1 minute between visitors!")
+    # Rule 2: Enforce 2-minute wait time
+    if last_time and (now - last_time) < timedelta(minutes=2):
+        raise EarlyEntryError("Wait time not elapsed.")
 
-    # Append visitor to file
+    # Append visitor
     with open(FILENAME, "a") as f:
         f.write(f"{visitor_name},{now.isoformat()}\n")
 
