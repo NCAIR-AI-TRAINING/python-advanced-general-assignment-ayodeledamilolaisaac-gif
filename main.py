@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import os
 
 # Custom Exceptions
@@ -8,31 +8,30 @@ class DuplicateVisitorError(Exception):
 class EarlyEntryError(Exception):
     pass
 
-# File to store visitors
 FILENAME = "visitors.txt"
 
-# Ensure the visitors file exists
 def ensure_file():
+    """Ensure the visitors file exists."""
     if not os.path.exists(FILENAME):
         with open(FILENAME, "w") as f:
-            pass  # create an empty file
+            pass
 
-# Get the last visitor's name and timestamp
 def get_last_visitor():
-    if not os.path.exists(FILENAME) or os.path.getsize(FILENAME) == 0:
-        return None, None  # No visitors yet
-
+    """Return last visitor's name and timestamp."""
+    ensure_file()  # always ensure file exists
+    if os.path.getsize(FILENAME) == 0:
+        return None, None
     with open(FILENAME, "r") as f:
         lines = f.readlines()
         if not lines:
             return None, None
-        last_line = lines[-1].strip()  # Last line in file
+        last_line = lines[-1].strip()
         name, timestamp_str = last_line.split(",")
         timestamp = datetime.fromisoformat(timestamp_str)
         return name, timestamp
 
-# Add a visitor if rules are satisfied
 def add_visitor(visitor_name):
+    """Add visitor following rules."""
     last_name, last_time = get_last_visitor()
     now = datetime.now()
 
@@ -40,16 +39,14 @@ def add_visitor(visitor_name):
     if last_name == visitor_name:
         raise DuplicateVisitorError("Duplicate consecutive visitor!")
 
-    # Rule 2: 5-minute wait between different visitors
-    if last_time and (now - last_time).total_seconds() < 5 * 60:
-        raise EarlyEntryError("Must wait 5 minutes between visitors!")
+    # Rule 2: 1-minute wait between different visitors
+    if last_time and (now - last_time) < timedelta(minutes=1):
+        raise EarlyEntryError("Must wait 1 minute between visitors!")
 
     # Append visitor to file
     with open(FILENAME, "a") as f:
         f.write(f"{visitor_name},{now.isoformat()}\n")
-        #Append visitor ends
 
-# Main function to run the program
 def main():
     ensure_file()
     name = input("Enter visitor's name: ")
