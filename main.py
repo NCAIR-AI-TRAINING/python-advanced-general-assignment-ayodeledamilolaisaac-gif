@@ -9,12 +9,12 @@ class EarlyEntryError(Exception):
     pass
 
 FILENAME = "visitors.txt"
-WAIT_MINUTES = 1  # match autograder expectation
+WAIT_MINUTES = 5  # as per assignment requirement
 
 def ensure_file():
     """Ensure the visitors file exists."""
     if not os.path.exists(FILENAME):
-        open(FILENAME, "w").close()  # safer empty file creation
+        open(FILENAME, "w").close()  # safe creation of empty file
 
 def get_last_visitor():
     """Return last visitor's name and timestamp."""
@@ -36,21 +36,21 @@ def get_last_visitor():
         return name, timestamp
 
 def add_visitor(visitor_name):
-    """Add visitor following rules."""
+    """Add a visitor respecting duplicate and wait-time rules."""
     ensure_file()
 
     last_name, last_time = get_last_visitor()
     now = datetime.now()
 
-    # Rule 1: Duplicate visitor check
+    # Rule 1: No duplicate consecutive visitors
     if last_name == visitor_name:
         raise DuplicateVisitorError("Duplicate visitor.")
 
-    # Rule 2: Enforce wait time
+    # Rule 2: Enforce 5-minute wait time
     if last_time and (now - last_time) < timedelta(minutes=WAIT_MINUTES):
         raise EarlyEntryError("Wait time not elapsed.")
 
-    # Append visitor
+    # Append visitor to file
     with open(FILENAME, "a") as f:
         f.write(f"{visitor_name} - {now.strftime('%Y-%m-%d %H:%M:%S')}\n")
 
